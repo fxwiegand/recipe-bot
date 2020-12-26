@@ -81,9 +81,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let items: Vec<_> = matches
                         .trim_start_matches("contains ")
                         .split_whitespace()
-                        .map(|item| item.trim_matches(','))
+                        .map(|item| item.trim_matches(',').trim_matches('.'))
                         .filter(|item| item != &"and")
                         .collect();
+
+                    dbg!(items.clone());
 
                     let client = reqwest::Client::new();
                     let mut query = HashMap::new();
