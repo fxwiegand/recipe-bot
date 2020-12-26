@@ -38,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .filter(|t| data.to_lowercase().contains(*t))
                     .collect();
 
-                let fridge_contains = Regex::new(r"^*contains\s(\s*(and)?[a-z]*,?)*.*$").unwrap();
+                let fridge_contains = Regex::new(r"^.*contains\s(\s*(and)?[a-z]*,?)*.*$").unwrap();
 
                 let answer = if data.to_lowercase().contains("recipe")
                     && data.to_lowercase().contains("random")
@@ -59,8 +59,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     {
                         Ok(resp) => {
                             if !resp.get("recipes").unwrap().as_array().unwrap().is_empty() {
-                                let resp_content =
-                                    obtain_information(resp.as_array().unwrap().to_vec());
+                                let resp_content = obtain_information(
+                                    resp.get("recipes").unwrap().as_array().unwrap().to_vec(),
+                                );
 
                                 format!("What about some {} today. {} You can find the full recipe here: {}.", resp_content.get("dish").unwrap(), resp_content.get("summary").unwrap(), resp_content.get("source_url").unwrap())
                             } else {
@@ -140,7 +141,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 } else {
-                    "I can not quite understand you. Try asking me for a random recipe or tell me whats left in your fridge.".to_string()
+                    "I can not quite understand you. Try asking me for a random recipe or tell me whats left in your fridge.\nFor example write: 'My fridge contains eggs, potato and paprika.' or just 'Give me a random recipe that is vegetarian.'.".to_string()
                 };
 
                 // Answer message with recipe.
