@@ -85,8 +85,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .filter(|item| item != &"and")
                         .collect();
 
-                    dbg!(items.clone());
-
                     let client = reqwest::Client::new();
                     let mut query = HashMap::new();
                     query.insert("ingredients", items.join(","));
