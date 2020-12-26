@@ -1,5 +1,5 @@
 # recipe-bot
-Just a simple telegram bot when you are looking for some cooking-inspiration. You can message me [here](t.me/remy_ratatouille_bot)!
+Just a simple telegram bot when you are looking for some cooking-inspiration. You can message me [here](http://t.me/remy_ratatouille_bot)!
 
 ## todos
 
