@@ -1,3 +1,4 @@
+use lazy_static::lazy_static;
 use log::warn;
 use regex::Regex;
 use serde_json::Value;
@@ -6,6 +7,11 @@ use std::env;
 use telegram_bot::*;
 use tokio::stream::StreamExt;
 use voca_rs::*;
+
+lazy_static! {
+    static ref FRIDGE_CONTAINS: Regex =
+        Regex::new(r"^.*contains\s(\s*(and)?[a-z]*,?)*.*$").unwrap();
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -37,8 +43,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .into_iter()
                     .filter(|t| data.to_lowercase().contains(*t))
                     .collect();
-
-                let fridge_contains = Regex::new(r"^.*contains\s(\s*(and)?[a-z]*,?)*.*$").unwrap();
 
                 let answer = if data.to_lowercase().contains("recipe")
                     && data.to_lowercase().contains("random")
@@ -73,8 +77,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             "It seems like something went wrong. I am really sorry.".to_string()
                         }
                     }
-                } else if fridge_contains.is_match(&data.to_lowercase()) {
-                    let matches = fridge_contains
+                } else if FRIDGE_CONTAINS.is_match(&data.to_lowercase()) {
+                    let matches = FRIDGE_CONTAINS
                         .find(&data.to_lowercase())
                         .unwrap()
                         .as_str()
