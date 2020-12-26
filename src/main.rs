@@ -55,24 +55,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .await
                     {
                         Ok(resp) => {
-                            let dish = resp.get("recipes").unwrap()[0]
-                                .get("title")
-                                .unwrap()
-                                .to_string();
-                            let summary = strip::strip_tags(
-                                &resp.get("recipes").unwrap()[0]
-                                    .get("summary")
+                            if !resp.get("recipes").unwrap().as_array().unwrap().is_empty() {
+                                let dish = resp.get("recipes").unwrap()[0]
+                                    .get("title")
                                     .unwrap()
-                                    .to_string()
-                                    .trim_start_matches('\"')
-                                    .trim_end_matches('\"'),
-                            );
-                            let source_url = resp.get("recipes").unwrap()[0]
-                                .get("sourceUrl")
-                                .unwrap()
-                                .to_string();
+                                    .to_string();
+                                let summary = strip::strip_tags(
+                                    &resp.get("recipes").unwrap()[0]
+                                        .get("summary")
+                                        .unwrap()
+                                        .to_string()
+                                        .trim_start_matches('\"')
+                                        .trim_end_matches('\"'),
+                                );
+                                let source_url = resp.get("recipes").unwrap()[0]
+                                    .get("sourceUrl")
+                                    .unwrap()
+                                    .to_string();
 
-                            format!("What about some {} today. {} You can find the full recipe here: {}.", dish.trim_start_matches('\"').trim_end_matches('\"'), summary, source_url.trim_start_matches('\"').trim_end_matches('\"'))
+                                format!("What about some {} today. {} You can find the full recipe here: {}.", dish.trim_start_matches('\"').trim_end_matches('\"'), summary, source_url.trim_start_matches('\"').trim_end_matches('\"'))
+                            } else {
+                                "I couldn't find any recipe based on your given tags. Maybe ask for a more general recipe.".to_string()
+                            }
                         }
                         Err(e) => {
                             warn!("{}", e.to_string());
