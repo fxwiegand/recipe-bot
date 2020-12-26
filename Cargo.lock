@@ -980,6 +980,7 @@ name = "recipe-bot"
 version = "0.1.0"
 dependencies = [
  "log 0.4.11",
+ "regex",
  "reqwest",
  "serde_json",
  "telegram-bot",
