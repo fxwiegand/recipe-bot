@@ -3,7 +3,8 @@ Just a simple telegram bot when you are looking for some cooking-inspiration. Yo
 
 ## todos
 
-- [ ] Add feature to find recipes with what you have left in the fridge.
+- [x] Add a feature to find recipes with what you have left in the fridge.
 - [ ] Add more tags and improve tag parsing.
-- [ ] Add more indiviual humorous anwers.
+- [ ] Add more individual humorous answers.
+- [ ] Test existing features.
 - [ ] Think about more features.
