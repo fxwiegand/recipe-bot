@@ -183,3 +183,9 @@ fn obtain_information(resp: Vec<Value>) -> HashMap<String, String> {
 
     result
 }
+
+#[test]
+fn test_fridge_regex() {
+    let message = "My fridge contains tomato, egg, rice and oat.";
+    assert!(FRIDGE_CONTAINS.is_match(message));
+}
