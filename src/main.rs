@@ -93,7 +93,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if items.contains(&"dog") {
                         "Hell no, please get your dog out of your fridge! That is not the right place for him!".to_string()
                     } else if items.contains(&"cat") {
-                        "You don't put your cat in the fridge mate! What's wrong with you?".to_string()
+                        "You don't put your cat in the fridge mate! What's wrong with you?"
+                            .to_string()
                     } else {
                         let client = reqwest::Client::new();
                         let mut query = HashMap::new();
