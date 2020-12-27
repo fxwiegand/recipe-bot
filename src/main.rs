@@ -90,58 +90,64 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .filter(|item| item != &"and")
                         .collect();
 
-                    let client = reqwest::Client::new();
-                    let mut query = HashMap::new();
-                    query.insert("ingredients", items.join(","));
-                    query.insert("number", "1".to_string());
+                    if items.contains(&"dog") {
+                        "Hell no, please get your dog out of your fridge! That is not the right place for him!".to_string()
+                    } else if items.contains(&"cat") {
+                        "You don't put your cat in the fridge mate! What's wrong with you?".to_string()
+                    } else {
+                        let client = reqwest::Client::new();
+                        let mut query = HashMap::new();
+                        query.insert("ingredients", items.join(","));
+                        query.insert("number", "1".to_string());
 
-                    match client
-                        .get("https://api.spoonacular.com/recipes/findByIngredients")
-                        .query(&[("apiKey", api_key.clone())])
-                        .query(&query)
-                        .send()
-                        .await?
-                        .json::<Value>()
-                        .await
-                    {
-                        Ok(resp) => {
-                            if !resp.as_array().unwrap().is_empty() {
-                                let id = resp.as_array().unwrap()[0]
-                                    .get("id")
-                                    .unwrap()
-                                    .as_i64()
-                                    .unwrap();
+                        match client
+                            .get("https://api.spoonacular.com/recipes/findByIngredients")
+                            .query(&[("apiKey", api_key.clone())])
+                            .query(&query)
+                            .send()
+                            .await?
+                            .json::<Value>()
+                            .await
+                        {
+                            Ok(resp) => {
+                                if !resp.as_array().unwrap().is_empty() {
+                                    let id = resp.as_array().unwrap()[0]
+                                        .get("id")
+                                        .unwrap()
+                                        .as_i64()
+                                        .unwrap();
 
-                                match client
-                                    .get(
-                                        &(String::from("https://api.spoonacular.com/recipes/")
-                                            + &id.to_string()
-                                            + "/information"),
-                                    )
-                                    .query(&[("apiKey", api_key.clone())])
-                                    .send()
-                                    .await?
-                                    .json::<Value>()
-                                    .await
-                                {
-                                    Ok(s_res) => {
-                                        let resp_content = obtain_information(vec![s_res]);
+                                    match client
+                                        .get(
+                                            &(String::from("https://api.spoonacular.com/recipes/")
+                                                + &id.to_string()
+                                                + "/information"),
+                                        )
+                                        .query(&[("apiKey", api_key.clone())])
+                                        .send()
+                                        .await?
+                                        .json::<Value>()
+                                        .await
+                                    {
+                                        Ok(s_res) => {
+                                            let resp_content = obtain_information(vec![s_res]);
 
-                                        format!("You could make some {} today. {} The full recipe is right here: {}.", resp_content.get("dish").unwrap(), resp_content.get("summary").unwrap(), resp_content.get("source_url").unwrap())
+                                            format!("You could make some {} today. {} The full recipe is right here: {}.", resp_content.get("dish").unwrap(), resp_content.get("summary").unwrap(), resp_content.get("source_url").unwrap())
+                                        }
+                                        Err(e) => {
+                                            warn!("{}", e.to_string());
+                                            "It seems like something went wrong. I am really sorry."
+                                                .to_string()
+                                        }
                                     }
-                                    Err(e) => {
-                                        warn!("{}", e.to_string());
-                                        "It seems like something went wrong. I am really sorry."
-                                            .to_string()
-                                    }
+                                } else {
+                                    "I couldn't find any recipe based on your given ingredients. Maybe ask with less ingredients or just ask for a random recipe.".to_string()
                                 }
-                            } else {
-                                "I couldn't find any recipe based on your given ingredients. Maybe ask with less ingredients or just ask for a random recipe.".to_string()
                             }
-                        }
-                        Err(e) => {
-                            warn!("{}", e.to_string());
-                            "It seems like something went wrong. I am really sorry.".to_string()
+                            Err(e) => {
+                                warn!("{}", e.to_string());
+                                "It seems like something went wrong. I am really sorry.".to_string()
+                            }
                         }
                     }
                 } else {
